@@ -1,6 +1,6 @@
 # S3 Manager
 Simple demo S3 web interface + infra code.
-The interface lets you download & upload files from the bucket.
+The interface lets you download & upload files from the defined bucket.
 
 <img src="https://raw.githubusercontent.com/lfkdev/s3manager/master/Screenshot.png">
 
@@ -8,13 +8,13 @@ The interface lets you download & upload files from the bucket.
 This demo will:
 - Spawn EC2 Instance
 - Spawn S3 Bucket
-- Install Minikube (Cluster)
-- Install Caddy (Balancer)
+- Install & Setup Minikube (Cluster)
+- Install & Setup Caddy (Balancer+TLS)
 - Install S3 Manager (flask backend + bootstrap frontend)
-- All needed Requirements
+- All needed requirements
 
 ## Overview
-Relevant Code: 
+Relevant code: 
 [S3 App](roles/lfk.s3_frontend/templates/app.py.j2)
 [Frontend](roles/lfk.s3_frontend/files/frontend/static/index.html)
 
@@ -33,13 +33,13 @@ Ansible Collections:
 
 ## Run
 - Setup Ansbile Node
-- Add Export vars on node (make sure IAM User has s3/ec2 perms)
+- Add export vars on node (make sure IAM user has s3/ec2 perms)
 ```
 export AWS_ACCESS_KEY=<key>
 export AWS_SECRET_KEY=<key>
 ```
-- Add DNS Entries & set them in Ansible
-- Run Playbooks:
+- Add DNS entries & set them in ansible
+- Run playbooks:
 ```shell
 $ ansible-playbook s3_frontend_infra.yml -e first_start=true
 $ ansible-playbook s3_frontend.yml -e first_start=true

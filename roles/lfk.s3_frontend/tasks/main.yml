@@ -1,0 +1,16 @@
+---
+- name: apt update
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: install net-tools
+  ansible.builtin.apt:
+    name: net-tools
+    state: present
+
+- name: include tasks for app setup
+  ansible.builtin.include_tasks: app.yml
+
+- name: include tasks for minikube
+  ansible.builtin.include_tasks: minikube.yml

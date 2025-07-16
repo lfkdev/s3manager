@@ -1,0 +1,49 @@
+---
+- name: create folder for s3 frontend
+  ansible.builtin.file:
+    path: "{{ lfk_s3_frontend_path }}"
+    state: directory
+
+- name: copy over Dockerfile
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: "{{ lfk_s3_frontend_path }}/Dockerfile"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: rebuild docker image
+
+- name: copy over Dockerignore
+  ansible.builtin.template:
+    src: dockerignore
+    dest: "{{ lfk_s3_frontend_path }}/.dockerignore"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: copy over frontend folder in files
+  ansible.builtin.copy:
+    src: files/frontend/static
+    dest: "{{ lfk_s3_frontend_path }}/"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: rebuild docker image
+
+- name: copy over requirements.txt
+  ansible.builtin.template:
+    src: requirements.txt.j2
+    dest: "{{ lfk_s3_frontend_path }}/requirements.txt"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: rebuild docker image
+
+- name: copy over app.py
+  ansible.builtin.template:
+    src: app.py.j2
+    dest: "{{ lfk_s3_frontend_path }}/app.py"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: rebuild docker image

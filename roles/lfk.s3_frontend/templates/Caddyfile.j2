@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+{{ lfk_s3_frontend_domain }} {
+
+  reverse_proxy {{ lfk_s3_frontend_minikube_ip }}:{{lfk_s3_frontend_nodeport}}
+
+  log {
+    output file /var/log/caddy/s3.log {
+      roll_size 100mb
+      roll_keep 5
+      roll_keep_for 720h
+    }
+  }
+
+}

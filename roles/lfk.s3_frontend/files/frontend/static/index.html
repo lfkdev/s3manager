@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <title>S3 File Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous">
+
+    <style>
+      .btn-file{position:relative;overflow:hidden;}
+      .btn-file input[type=file]{
+        position:absolute;top:0;right:0;min-width:100%;min-height:100%;
+        font-size:100px;opacity:0;cursor:pointer;
+      }
+    </style>
+  </head>
+
+
+  <body class="container py-5">
+    <h1 class="mb-4 text-primary">S3 File Manager</h1>
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Upload a file</h5>
+        <p class="card-text small text-muted">
+          Files are stored in your configured S3 bucket.
+        </p>
+
+        <button class="btn btn-primary btn-file">
+          Choose file…
+          <input id="fileInput" type="file">
+        </button>
+
+        <span id="uploadStatus" class="ms-3 small"></span>
+      </div>
+    </div>
+
+    <div id="stats" class="mb-3"></div>
+
+    <ul id="fileList" class="list-group shadow-sm"></ul>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"></script>
+
+    <script>
+      const statusEl = document.getElementById('uploadStatus');
+      const listEl   = document.getElementById('fileList');
+      const statsEl  = document.getElementById('stats');
+      const API      = '';
+
+      async function json(url, opts={}) {
+        const r = await fetch(url, opts);
+        if (!r.ok) throw new Error(await r.text());
+        return r.json();
+      }
+
+      async function loadFiles() {
+        listEl.innerHTML =
+          '<li class="list-group-item text-secondary">Loading…</li>';
+        try {
+          const data = await json(`${API}/files`);
+          statsEl.innerHTML =
+            `<span class="badge bg-info">Total files: ${data.total}</span>`;
+          if (!data.files.length) {
+            listEl.innerHTML =
+              '<li class="list-group-item text-secondary">No files yet</li>';
+            return;
+          }
+          listEl.innerHTML = '';
+          data.files.forEach(obj => {
+            const li = document.createElement('li');
+            li.className =
+              'list-group-item d-flex justify-content-between align-items-center';
+            li.innerHTML = `
+              <div class="text-truncate" style="max-width:70%">
+                <i class="bi bi-file-earmark me-2"></i>${obj.key}
+                <small class="text-muted d-block">
+                  ${new Date(obj.last_modified).toLocaleString()}
+                </small>
+              </div>
+              <a class="btn btn-outline-light btn-sm"
+                 href="/download/${encodeURIComponent(obj.key)}">
+                 Download
+              </a>`;
+            listEl.appendChild(li);
+          });
+        } catch (err) {
+          listEl.innerHTML =
+            `<li class="list-group-item text-danger">Error: ${err.message}</li>`;
+        }
+      }
+
+      async function uploadFile(file) {
+        const fd = new FormData();
+        fd.append('file', file);
+        statusEl.textContent = 'Uploading…';
+        try {
+          await json(`${API}/upload`, { method:'POST', body:fd });
+          statusEl.textContent = '✓ Uploaded';
+          await loadFiles();
+        } catch (err) {
+          statusEl.textContent = '✗ ' + err.message;
+        }
+      }
+
+      document.getElementById('fileInput').addEventListener('change', e => {
+        if (e.target.files.length) uploadFile(e.target.files[0]);
+      });
+
+      loadFiles();
+    </script>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.0/font/bootstrap-icons.css">
+  </body>
+</html>

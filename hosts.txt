@@ -1,0 +1,2 @@
+[s3_frontend]
+s3_frontend1 ansible_host=<yourhost> ansible_user=ubuntu

@@ -1,0 +1,40 @@
+---
+- name: install docker
+  hosts: "s3_frontend"
+  become: true
+  roles:
+    - geerlingguy.docker
+  tags:
+    - docker
+
+- name: install minikube
+  hosts: "s3_frontend"
+  become: true
+  roles:
+    - gantsign.minikube
+  tags:
+    - minikube
+
+- name: install kubectl
+  hosts: "s3_frontend"
+  become: true
+  roles:
+    - aarna-stream.kubectl
+  tags:
+    - kubectl
+
+- name: install node exporter
+  hosts: "s3_frontend"
+  become: true
+  roles:
+    - lfk.s3_frontend
+  tags:
+    - s3_frontend
+
+- name: install caddy
+  hosts: "s3_frontend"
+  become: true
+  roles:
+    - caddy_ansible.caddy_ansible
+  tags:
+    - caddy

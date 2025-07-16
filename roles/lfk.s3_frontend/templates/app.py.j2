@@ -1,0 +1,45 @@
+from flask import Flask, send_from_directory, request, jsonify, redirect
+import boto3, os, uuid
+from datetime import datetime, timezone
+
+app = Flask(__name__, static_folder="static")
+
+s3 = boto3.client("s3")
+BUCKET = os.environ["S3_BUCKET"]
+
+@app.route("/", methods=["GET"])
+def root():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    f = request.files["file"]
+    key = f"{uuid.uuid4()}_{f.filename}"
+    s3.upload_fileobj(f, BUCKET, key)
+    return {"key": key}, 201
+
+@app.route("/files", methods=["GET"])
+def list_files():
+    resp = s3.list_objects_v2(Bucket=BUCKET, MaxKeys=1000)
+    objects = resp.get("Contents", [])
+    objects.sort(key=lambda o: o["LastModified"], reverse=True)
+    latest = objects[:10]
+    return jsonify({
+        "total": len(objects),
+        "files": [
+            {
+                "key": o["Key"],
+                "last_modified": o["LastModified"].astimezone(
+                    timezone.utc).isoformat()
+            } for o in latest
+        ],
+    })
+
+@app.route("/download/<path:key>", methods=["GET"])
+def download(key):
+    url = s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": BUCKET, "Key": key},
+        ExpiresIn=600000
+    )
+    return redirect(url)

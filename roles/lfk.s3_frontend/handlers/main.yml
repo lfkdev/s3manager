@@ -1,0 +1,28 @@
+---
+# handlers file for lfk.s3_frontend
+- name: restart caddy
+  ansible.builtin.systemd:
+    name: caddy
+    state: restarted
+    enabled: true
+
+- name: rebuild docker image
+  community.docker.docker_image:
+    name: s3_frontend
+    tag: "{{ lfk_s3_frontend_docker_tag }}"
+    source: build
+    force_source: true
+    build:
+      path: "{{ lfk_s3_frontend_path }}"
+      nocache: yes
+  notify:
+    - minikube image load
+    - rollout restart deployment
+
+- name: minikube image load
+  ansible.builtin.command: >
+    minikube image load s3_frontend:{{ lfk_s3_frontend_docker_tag }}
+
+- name: rollout restart deployment
+  ansible.builtin.command: |
+    kubectl rollout restart deployment/s3-frontend-deployment

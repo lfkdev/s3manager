@@ -1,0 +1,12 @@
+---
+# defaults file for lfk.s3_frontend
+lfk_s3_frontend_path: "/opt/s3_frontend"
+lfk_s3_bucket_name: "<yourbucket>"
+lfk_s3_bucket_region: "eu-north-1"
+lfk_s3_frontend_domain: "s3-frontend.example.com"
+lfk_s3_kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+lfk_s3_frontend_nodeport: 31337
+first_start: false
+
+lfk_s3_aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+lfk_s3_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"

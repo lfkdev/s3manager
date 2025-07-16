@@ -1,0 +1,25 @@
+# gantsign.minikube
+minikube_version: '1.36.0'
+
+# geerlingguy.docker
+docker_edition: 'ce'
+
+# caddy_ansible.caddy_ansible
+caddy_config: "{{ lookup('template', '/etc/ansible/roles/lfk.s3_frontend/templates/Caddyfile.j2') }}"
+caddy_os: linux
+caddy_systemd_capabilities_enabled: true
+caddy_update: false
+caddy_systemd_restart_startlimitinterval: 3
+caddy_systemd_restart_startlimitburst: 10
+
+# lfk.s3_frontend
+lfk_s3_frontend_domain: "your.website.com"
+lfk_s3_aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+lfk_s3_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+lfk_s3_frontend_nodeport: 31337
+lfk_s3_frontend_minikube_ip: 192.168.49.2
+lfk_s3_frontend_docker_tag: "dev"
+lfk_s3_bucket_region: "eu-north-1"
+
+# lfk.aws_ec2
+lfk_aws_region: "eu-north-1"

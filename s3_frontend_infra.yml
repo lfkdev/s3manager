@@ -1,0 +1,7 @@
+---
+- name: spawn ec2 instance
+  hosts: localhost
+  roles:
+    - lfk.aws_ec2
+  tags:
+    - aws_ec2

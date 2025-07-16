@@ -1,0 +1,10 @@
+---
+# defaults file for lfk.s3_frontend
+lfk_aws_ami: ami-0becc523130ac9d5d
+lfk_aws_region: "eu-north-1"
+lfk_aws_instance_type: "t3.medium"
+
+lfk_aws_bucket_name: "somename"
+
+lfk_aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+lfk_aws_secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"

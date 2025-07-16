@@ -2,6 +2,8 @@
 Simple demo S3 web interface + infra code.
 The interface lets you download & upload files from the bucket.
 
+<img src="https://raw.githubusercontent.com/lfkdev/s3manager/master/Screenshot.png">
+
 ## Description
 This demo will:
 - Spawn EC2 Instance
@@ -13,16 +15,18 @@ This demo will:
 
 ## Overview
 Relevant Code: 
-[S3 App](roles\lfk.s3_frontend\templates\app.py.j2)
-[Frontend](roles\lfk.s3_frontend\files\frontend\static\index.html)
+[S3 App](roles/lfk.s3_frontend/templates/app.py.j2)
+[Frontend](roles/lfk.s3_frontend/files/frontend/static/index.html)
 
 ## Requirements:
 Libs:
 - python boto3
+
 Ansible Roles:
 - aarna-stream.kubectl
 - caddy_ansible.caddy_ansible
 - geerlingguy.docker
+
 Ansible Collections:
 - kubernetes.core
 - amazon.aws
@@ -36,8 +40,10 @@ export AWS_SECRET_KEY=<key>
 ```
 - Add DNS Entries & set them in Ansible
 - Run Playbooks:
-`$ ansible-playbook s3_frontend_infra.yml -e first_start=true`
-`$ ansible-playbook s3_frontend.yml -e first_start=true`
+```shell
+$ ansible-playbook s3_frontend_infra.yml -e first_start=true
+$ ansible-playbook s3_frontend.yml -e first_start=true
+```
 
 ## Techstack:
 ```
